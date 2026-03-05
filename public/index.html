@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Banco Local</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+   <div class="container">
+    <div class="box">
+      
+<h2>Banco Local</h2>
+
+<h3>Cadastro</h3>
+<input id="regUser" placeholder="Usuário">
+<input id="regPass" type="password" placeholder="Senha">
+<button onclick="register()">Cadastrar</button>
+
+<h3>Login</h3>
+<input id="loginUser" placeholder="Usuário">
+<input id="loginPass" type="password" placeholder="Senha">
+<button onclick="login()">Entrar</button>
+
+<p id="msg"></p>
+
+<script>
+function register() {
+  fetch("/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: regUser.value,
+      password: regPass.value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    msg.innerText = data.message || data.error;
+  });
+}
+
+function login() {
+  fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: loginUser.value,
+      password: loginPass.value
+    })
+  })
+  .then(res => res.json())
+  .then(user => {
+    if (user.error) {
+      msg.innerText = user.error;
+    } else {
+      localStorage.setItem("userId", user.id);
+      window.location.href = "dashboard.html";
+    }
+  });
+}
+</script>
+
+</div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+}
+
+/* Container central */
+.container {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* Card */
+.box {
+  background: #1c1c1e;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0,255,0,0.15);
+}
+
+/* Títulos */
+h2 {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+h3 {
+  margin-top: 25px;
+  color: #00ff55;
+}
+
+/* Saldo */
+#saldo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #00ff55;
+  margin: 15px 0;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  border-radius: 12px;
+  border: none;
+  background: #2c2c2e;
+  color: white;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 8px #00ff55;
+}
+
+/* Botões */
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  border-radius: 12px;
+  border: none;
+  background: #00cc44;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #00ff55;
+}
+
+/* Extrato */
+#extrato p {
+  font-size: 13px;
+  margin: 6px 0;
+  opacity: 0.9;
+}
+
+/* Canvas do gráfico */
+canvas {
+  margin-top: 15px;
+  background: #111;
+  border-radius: 12px;
+  padding: 10px;
+}

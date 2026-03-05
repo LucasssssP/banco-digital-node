@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minha Conta</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="box">
+
+<h2>Minha Conta</h2>
+
+<p id="saldo"></p>
+
+<input id="valor" placeholder="Valor">
+<button onclick="depositar()">Depositar</button>
+<button onclick="sacar()">Sacar</button>
+<button onclick="logout()">Sair</button>
+<h3>Transferir</h3>
+<input id="destino" placeholder="Usuário destino">
+<input id="valorTransfer" placeholder="Valor">
+<button onclick="transferir()">Transferir</button>
+<script>
+const userId = localStorage.getItem("userId");
+
+if (!userId) {
+  window.location.href = "/";
+}
+
+function carregar() {
+  fetch("/user/" + userId)
+  .then(res => res.json())
+  .then(user => {
+    saldo.innerText = "Saldo: R$ " + user.balance.toFixed(2);
+    carregarExtrato();
+    carregarGrafico();
+  });
+}
+
+function depositar() {
+  atualizarSaldo(parseFloat(valor.value));
+}
+
+function sacar() {
+  atualizarSaldo(-parseFloat(valor.value));
+}
+
+function atualizarSaldo(valorNum) {
+  if (isNaN(valorNum)) return;
+
+  fetch("/updateBalance", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: userId,
+      amount: valorNum
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message || data.error);
+    carregar();
+  });
+}
+
+function logout() {
+  localStorage.removeItem("userId");
+  window.location.href = "/";
+}
+
+function transferir() {
+  const userDestino = destino.value;
+  const valorNum = parseFloat(valorTransfer.value);
+
+  if (!userDestino || isNaN(valorNum) || valorNum <= 0) {
+    alert("Dados inválidos");
+    return;
+  }
+
+  fetch("/transfer", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      fromId: userId,
+      toUsername: userDestino,
+      amount: valorNum
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message || data.error);
+    carregar();
+  });
+}
+
+function carregarExtrato() {
+  fetch("/transactions/" + userId)
+  .then(res => res.json())
+  .then(lista => {
+    extrato.innerHTML = "";
+
+    lista.forEach(t => {
+
+  const dataFormatada = new Date(t.created_at + "Z").toLocaleString("pt-BR", {
+    timeZone: "America/Sao_Paulo"
+  });
+
+  extrato.innerHTML += `
+    <p>
+      ${t.type} - R$ ${t.amount.toFixed(2)}
+      ${t.target ? " | " + t.target : ""}
+      <br>
+      <small>${dataFormatada}</small>
+    </p>
+    <hr>
+  `;
+});
+  });
+}
+
+carregar();
+
+let chart;
+
+function carregarGrafico() {
+  fetch("/transactions-summary/" + userId)
+    .then(res => res.json())
+    .then(dados => {
+
+      const labels = dados.map(d => d.date);
+      const valores = dados.map(d => d.total);
+
+      const ctx = document.getElementById('grafico').getContext('2d');
+
+      if (chart) {
+        chart.destroy();
+      }
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Movimentação por Dia',
+            data: valores,
+            borderWidth: 2,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    });
+}
+</script>
+<h3>Extrato</h3>
+<div id="extrato"></div>
+<h3>Gráfico de Movimentação</h3>
+<canvas id="grafico" width="400" height="200"></canvas>
+</div>
+  </div>
+</body>
+</html>
