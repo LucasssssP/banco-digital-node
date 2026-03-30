@@ -16,7 +16,7 @@ Javascript
 📌 Features
 🔹 Login
 🔹 Transfer
-🔹 Withdraw 
+🔹 Withdraw <p>
  <img width="392" height="592" alt="image" src="https://github.com/user-attachments/assets/4f860569-bae9-4399-8487-e38ef63a15b4" />
 
 🔹 Extract history
